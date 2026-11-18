@@ -1,26 +1,35 @@
+
 pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
-                echo 'Building my project...'
+                echo 'Building the application...'
                 sh 'ls -l'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing my project...'
+                echo 'Testing the application...'
                 sh 'test -f index.html'
-                echo 'HTML file exists. Test passed!'
+                echo 'Test passed!'
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build') {
             steps {
-                echo 'Deployment stage completed!'
+                echo 'Building Docker image...'
+                sh 'docker build -t jenkins-demo:v1 .'
             }
         }
     }
 }
+
