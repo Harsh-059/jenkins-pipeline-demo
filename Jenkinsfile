@@ -33,3 +33,17 @@ pipeline {
     }
 }
 
+stage('Docker Run') {
+    steps {
+        echo 'Starting Docker container...'
+        sh 'docker rm -f jenkins-demo || true'
+        sh 'docker run -d --name jenkins-demo -p 8082:80 jenkins-demo:v1'
+    }
+}
+stage('Verify') {
+    steps {
+        echo 'Checking application...'
+        sh 'curl -f http://localhost:8082'
+        echo 'Application is running successfully!'
+    }
+}
