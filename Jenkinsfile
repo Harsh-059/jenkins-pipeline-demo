@@ -3,6 +3,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -11,14 +12,14 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building the application...'
+                echo 'Building application...'
                 sh 'ls -l'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing the application...'
+                echo 'Testing application...'
                 sh 'test -f index.html'
                 echo 'Test passed!'
             }
@@ -30,20 +31,22 @@ pipeline {
                 sh 'docker build -t jenkins-demo:v1 .'
             }
         }
+
+        stage('Docker Run') {
+            steps {
+                echo 'Starting Docker container...'
+                sh 'docker rm -f jenkins-demo || true'
+                sh 'docker run -d --name jenkins-demo -p 8082:80 jenkins-demo:v1'
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                echo 'Checking application...'
+                sh 'curl -f http://localhost:8082'
+                echo 'Application is running!'
+            }
+        }
     }
 }
 
-stage('Docker Run') {
-    steps {
-        echo 'Starting Docker container...'
-        sh 'docker rm -f jenkins-demo || true'
-        sh 'docker run -d --name jenkins-demo -p 8082:80 jenkins-demo:v1'
-    }
-}
-stage('Verify') {
-    steps {
-        echo 'Checking application...'
-        sh 'curl -f http://localhost:8082'
-        echo 'Application is running successfully!'
-    }
-}
