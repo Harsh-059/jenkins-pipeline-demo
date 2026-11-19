@@ -15,6 +15,27 @@ pipeline {
                 echo 'Building application...'
                 sh 'ls -l'
             }
+
+steps {
+            
+stage('Credentials Demo') {
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'practice-creds',
+                usernameVariable: 'MY_USERNAME',
+                passwordVariable: 'MY_PASSWORD'
+            )
+        ]) {
+            sh '''
+                echo "Username is available to Jenkins"
+                echo "Credentials loaded successfully"
+                echo "Password is protected and will not be printed"
+            '''
+        }
+    }
+}
+
         }
 
         stage('Test') {
